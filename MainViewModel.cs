@@ -417,7 +417,7 @@ namespace CgxmlToCsv
                                 titlu.Append(p.TITLENO?.Trim() + "; ");
 
                             if (!string.IsNullOrEmpty(p.NOTES))
-                                mentiuni.Append(p.NOTES?.Trim() + "; ");
+                                mentiuni.Append(RemoveSpecialCharFromString(p.NOTES?.Trim()) + "; ");
 
 
                             if (!string.IsNullOrEmpty(p.TOPONO))
@@ -459,8 +459,8 @@ namespace CgxmlToCsv
                         {
                             if (!string.IsNullOrEmpty(p.FIRSTNAME) || !string.IsNullOrEmpty(p.LASTNAME))
                             {
-                                p.FIRSTNAME = RemoveCommaFromString(p.FIRSTNAME);
-                                p.LASTNAME = RemoveCommaFromString(p.LASTNAME); ;
+                                p.FIRSTNAME = RemoveSpecialCharFromString(p.FIRSTNAME);
+                                p.LASTNAME = RemoveSpecialCharFromString(p.LASTNAME); ;
                                 nume.AppendFormat("{0} {1}", p.FIRSTNAME?.Trim(), p.LASTNAME?.Trim());
                             }
                         }
@@ -493,19 +493,24 @@ namespace CgxmlToCsv
             streamWriter.Close();
         }
 
-        private static string RemoveCommaFromString(string str)
+        private static string RemoveSpecialCharFromString(string str)
         {
             if (string.IsNullOrEmpty(str)) return string.Empty;
 
-            if (!str.Contains(",")) return str;
+            str = str.Replace("\r\n", " ");
+            str = str.Replace(",", " ");
 
-            var tmpArray = str?.ToCharArray();
-            for (int i = 0; i < tmpArray.Length; ++i)
-            {
-                if (tmpArray[i] == ',')
-                    tmpArray[i] = ' ';
-            }
-            return new string(tmpArray);
+            //if (!str.Contains(",")) return str;
+
+            //var tmpArray = str?.ToCharArray();
+            //for (int i = 0; i < tmpArray.Length; ++i)
+            //{
+            //    if (tmpArray[i] == ',')
+            //        tmpArray[i] = ' ';
+            //}
+            //return new string(tmpArray);
+
+            return str;
         }
 
         #endregion
