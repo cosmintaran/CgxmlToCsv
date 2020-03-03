@@ -380,19 +380,19 @@ namespace CgxmlToCsv
 
                     if (cg.Land != null)
                     {
-                        builder.Append(cg.Land.PAPERLBNO.Trim());
+                        builder.Append(RemoveSpecialCharFromString(cg.Land.PAPERLBNO?.Trim()));
                         builder.Append(",");
-                        builder.Append(cg.Land.PAPERCADNO?.Trim());
+                        builder.Append(RemoveSpecialCharFromString(cg.Land.PAPERCADNO?.Trim()));
                         builder.Append(",");
-                        builder.Append(cg.Land.TOPONO?.Trim());
+                        builder.Append(RemoveSpecialCharFromString(cg.Land.TOPONO?.Trim()));
                         builder.Append(",");
-                        builder.Append(cg.Land.E2IDENTIFIER?.Trim());
+                        builder.Append(RemoveSpecialCharFromString(cg.Land.E2IDENTIFIER?.Trim()));
                         builder.Append(",");
                         builder.Append(cg.Land.PARCELLEGALAREA);
                         builder.Append(",");
                         builder.Append(cg.Land.MEASUREDAREA);
                         builder.Append(",");
-                        builder.Append(cg.Land.CADGENNO?.Trim());
+                        builder.Append(RemoveSpecialCharFromString(cg.Land.CADGENNO?.Trim()));
                         builder.Append(",");
                     }
                     else
@@ -411,21 +411,21 @@ namespace CgxmlToCsv
                         foreach (var p in cg.Parcel)
                         {
                             if (!string.IsNullOrEmpty(p.LANDPLOTNO))
-                                tarla.Append(p.LANDPLOTNO?.Trim() + "; ");
+                                tarla.Append(RemoveSpecialCharFromString(p.LANDPLOTNO?.Trim()) + "; ");
 
                             if (!string.IsNullOrEmpty(p.TITLENO))
-                                titlu.Append(p.TITLENO?.Trim() + "; ");
+                                titlu.Append(RemoveSpecialCharFromString(p.TITLENO?.Trim()) + "; ");
 
                             if (!string.IsNullOrEmpty(p.NOTES))
                                 mentiuni.Append(RemoveSpecialCharFromString(p.NOTES?.Trim()) + "; ");
 
 
                             if (!string.IsNullOrEmpty(p.TOPONO))
-                                parcelTopo.Append(p.TOPONO?.Trim() + "; ");
+                                parcelTopo.Append(RemoveSpecialCharFromString(p.TOPONO?.Trim()) + "; ");
 
 
                             if (!string.IsNullOrEmpty(p.PARCELNO))
-                                parcelNo.Append(p.PARCELNO?.Trim() + "; ");
+                                parcelNo.Append(RemoveSpecialCharFromString(p.PARCELNO?.Trim(),"_") + "; ");
                         }
 
                         var titluStr = titlu?.ToString().TrimEnd(' ', ';');
@@ -433,7 +433,7 @@ namespace CgxmlToCsv
                         var mentiuniStr = mentiuni?.ToString().TrimEnd(' ', ';');
 
                         var parcelTopoStr = parcelTopo?.ToString().TrimEnd(' ', ';');
-                        var parcelNoStr = parcelNo?.ToString().TrimEnd(' ', ';');
+                        var parcelNoStr = parcelNo?.ToString().TrimEnd(' ', ';', '_');
 
                         builder.Append(titluStr);
                         builder.Append(",");
@@ -493,23 +493,13 @@ namespace CgxmlToCsv
             streamWriter.Close();
         }
 
-        private static string RemoveSpecialCharFromString(string str)
+        private static string RemoveSpecialCharFromString(string str, string replaceChar=" ")
         {
             if (string.IsNullOrEmpty(str)) return string.Empty;
 
             str = str.Replace("\r\n", " ");
-            str = str.Replace(",", " ");
-
-            //if (!str.Contains(",")) return str;
-
-            //var tmpArray = str?.ToCharArray();
-            //for (int i = 0; i < tmpArray.Length; ++i)
-            //{
-            //    if (tmpArray[i] == ',')
-            //        tmpArray[i] = ' ';
-            //}
-            //return new string(tmpArray);
-
+            str = str.Replace("\n", " ");
+            str = str.Replace(",", replaceChar);
             return str;
         }
 
