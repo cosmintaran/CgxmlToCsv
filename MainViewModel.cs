@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Forms;
@@ -347,7 +348,7 @@ namespace CgxmlToCsv
 
                 streamWriter = new StreamWriter(_csvPath);
                 builder = new StringBuilder();
-                builder.AppendLine("Land_Nr. CF(hartie), Land_Nr.CAD, Land_Topo,ID Eterra, Supraf. Acte, Supraf Mas, CadGenId, Nr.Titlu, Nr. Tarla, Mentiuni parcela, Parcel_Topo,PARCELNO,Proprietar");
+                builder.AppendLine("Land_Nr. CF(hartie), Land_Nr.CAD, Land_Topo, Intravilan, ID Eterra, Supraf. Acte, Supraf Mas, CadGenId, Nr.Titlu, Nr. Tarla, Mentiuni parcela, Parcel_Topo, PARCELNO, Proprietar");
                 streamWriter.Write(builder);
             }
             catch (Exception ex)
@@ -386,6 +387,12 @@ namespace CgxmlToCsv
                         builder.Append(",");
                         builder.Append(RemoveSpecialCharFromString(cg.Land.TOPONO?.Trim()));
                         builder.Append(",");
+                        var adress =cg.Address.FirstOrDefault(w => w.ADDRESSID == cg.Land.ADDRESSID);
+                        if (adress != null)
+                            builder.Append(RemoveSpecialCharFromString(adress.INTRAVILAN.ToString()));
+                        else
+                            builder.Append("");
+                        builder.Append(",");
                         builder.Append(RemoveSpecialCharFromString(cg.Land.E2IDENTIFIER?.Trim()));
                         builder.Append(",");
                         builder.Append(cg.Land.PARCELLEGALAREA);
@@ -394,6 +401,7 @@ namespace CgxmlToCsv
                         builder.Append(",");
                         builder.Append(RemoveSpecialCharFromString(cg.Land.CADGENNO?.Trim()));
                         builder.Append(",");
+                        //TODO add registration
                     }
                     else
                     {
